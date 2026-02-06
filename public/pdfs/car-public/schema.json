@@ -102,7 +102,7 @@
             "placeholder": "رقم الرخصة"
         },
         {
-            "id": "numOfEx",
+            "id": "numOfEst",
             "label": "رقم الاستمارة",
             "type": "text",
             "required": true,
