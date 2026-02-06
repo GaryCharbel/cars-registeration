@@ -1,0 +1,15 @@
+directories:
+  output: release
+  buildResources: build
+appId: com.pdf-exam-filler.app
+productName: PDF Exam Filler
+files:
+  - filter:
+      - dist/**/*
+      - dist-electron/**/*
+win:
+  target: nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+electronVersion: 40.2.1

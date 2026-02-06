@@ -1,7 +1,11 @@
 import { PDFDocument } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
+import ArabicReshaper from 'arabic-reshaper'
+import bidiFactory from 'bidi-js'
 import type { FormData } from '../types/form'
 import cairoFontUrl from '../assets/fonts/Amiri-Regular.ttf'
+
+const bidi = bidiFactory()
 
 export async function fillPdf(
     sourcePdfPath: string,
@@ -9,114 +13,140 @@ export async function fillPdf(
 ): Promise<Blob> {
     try {
         console.log('Starting PDF form fill process...')
-        console.log('Source PDF path:', sourcePdfPath)
-        console.log('Form data:', formData)
 
         // Fetch the source PDF
-        console.log('Fetching PDF...')
         const response = await fetch(sourcePdfPath)
         if (!response.ok) {
             throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`)
         }
         const pdfBytes = await response.arrayBuffer()
-        console.log('PDF fetched, size:', pdfBytes.byteLength, 'bytes')
 
         // Load the PDF
-        console.log('Loading PDF document...')
         const pdfDoc = await PDFDocument.load(pdfBytes)
         pdfDoc.registerFontkit(fontkit)
-        console.log('PDF loaded successfully, pages:', pdfDoc.getPageCount())
 
         // Load Arabic Font
-        console.log('Loading Arabic font from:', cairoFontUrl)
         const fontBytes = await fetch(cairoFontUrl).then(res => {
             if (!res.ok) throw new Error(`Failed to load font: ${res.statusText}`)
             return res.arrayBuffer()
         })
         const customFont = await pdfDoc.embedFont(fontBytes)
-        console.log('Arabic font loaded')
 
         // Get the form
         const form = pdfDoc.getForm()
-        const fields = form.getFields()
-        console.log('Form fields found:', fields.length)
 
-        // Log all field names for debugging
-        fields.forEach(field => {
-            const name = field.getName()
-            const type = field.constructor.name
-            console.log(`Field: "${name}" (${type})`)
-        })
+        // Utility to reshape Arabic text
+        const reshapeText = (text: string) => {
+            if (!text) return text
+            // Check if text contains Arabic characters
+            const arabicPattern = /[\u0600-\u06FF]/
+            if (!arabicPattern.test(text)) return text
+
+            try {
+                // 1. Reshape Arabic characters (joining)
+                const reshaped = ArabicReshaper.reshape(text)
+                // 2. Reorder for RTL
+                const bidiText = bidi.getReorderedText(reshaped)
+                return bidiText
+            } catch (e) {
+                console.warn('Arabic reshaping failed, using original text:', e)
+                return text
+            }
+        }
 
         // Fill form fields
-        console.log('Filling form fields...')
         for (const [fieldId, value] of Object.entries(formData)) {
             if (value === undefined || value === null || value === '') {
                 continue
             }
 
-            if (value instanceof FileList && value.length > 0) {
-                try {
-                    const file = value[0]
-                    const arrayBuffer = await file.arrayBuffer()
-                    const imageBytes = new Uint8Array(arrayBuffer)
+            // Handle Photo Upload (Button Field)
+            if (fieldId === 'chamsiyePic' || value instanceof FileList) {
+                const files = value as unknown as FileList
+                if (files.length > 0) {
+                    try {
+                        const file = files[0]
+                        const arrayBuffer = await file.arrayBuffer()
+                        const imageBytes = new Uint8Array(arrayBuffer)
 
-                    let image
-                    if (file.type === 'image/png') {
-                        image = await pdfDoc.embedPng(imageBytes)
-                    } else if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
-                        image = await pdfDoc.embedJpg(imageBytes)
-                    }
-
-                    if (image) {
-                        try {
-                            const button = form.getButton(fieldId)
-                            button.setImage(image)
-                            console.log(`✓ Set image for button "${fieldId}"`)
-                        } catch (err) {
-                            console.warn(`Could not set image for field "${fieldId}":`, err)
+                        let image
+                        if (file.type === 'image/png') {
+                            image = await pdfDoc.embedPng(imageBytes)
+                        } else if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                            image = await pdfDoc.embedJpg(imageBytes)
                         }
+
+                        if (image) {
+                            try {
+                                const button = form.getButton(fieldId)
+                                button.setImage(image)
+                                console.log(`✓ Embedded photo in "${fieldId}"`)
+                            } catch (err) {
+                                console.warn(`Could not set image for field "${fieldId}"`)
+                            }
+                        }
+                    } catch (err) {
+                        console.error(`Error processing image for field "${fieldId}":`, err)
                     }
-                } catch (err) {
-                    console.error(`Error processing image for field "${fieldId}":`, err)
                 }
                 continue
             }
 
             try {
-                // Try as text field first
-                const field = form.getTextField(fieldId)
-                field.setText(String(value))
-                field.setFontSize(14)
-                field.updateAppearances(customFont)
-                console.log(`✓ Filled text field "${fieldId}" with "${value}"`)
-            } catch (error) {
-                // If not a text field, try as checkbox
+                let field
                 try {
-                    const checkboxField = form.getCheckBox(fieldId)
-                    if (value === true || value === 'true' || value === 'on') {
-                        checkboxField.check()
-                        console.log(`✓ Checked checkbox "${fieldId}"`)
-                    }
-                } catch (checkboxError) {
-                    console.warn(`Could not fill field "${fieldId}":`, error)
+                    field = form.getField(fieldId)
+                } catch (e) {
+                    console.warn(`Field "${fieldId}" not found in PDF.`)
+                    continue
                 }
+
+                if (field.constructor.name.includes('PDFTextField')) {
+                    const textField = form.getTextField(fieldId)
+                    const rawText = String(value)
+                    const textValue = reshapeText(rawText)
+
+                    try {
+                        textField.setFontSize(18) // Extra large for readability
+                        textField.setText(textValue)
+                        textField.updateAppearances(customFont)
+                    } catch (textError) {
+                        try {
+                            textField.setFontSize(18)
+                            textField.updateAppearances(customFont)
+                            textField.setText(textValue)
+                        } catch (recoveryError) {
+                            console.error(`Final failure for text field "${fieldId}"`)
+                        }
+                    }
+                } else if (field.constructor.name.includes('PDFCheckBox')) {
+                    const checkbox = form.getCheckBox(fieldId)
+                    // Robust boolean check
+                    const isChecked = value === true ||
+                        value === 'true' ||
+                        value === 'on' ||
+                        value === 'yes' ||
+                        value === 'ذكر'
+
+                    if (isChecked) {
+                        checkbox.check()
+                    } else {
+                        checkbox.uncheck()
+                    }
+                } else if (field.constructor.name.includes('PDFDropdown')) {
+                    const dropdown = form.getDropdown(fieldId)
+                    dropdown.select(String(value))
+                    dropdown.updateAppearances(customFont)
+                }
+            } catch (error) {
+                console.warn(`Major error processing field "${fieldId}":`, error)
             }
         }
 
-        console.log('Saving filled PDF...')
         const filledPdfBytes = await pdfDoc.save()
-        console.log('PDF saved, size:', filledPdfBytes.byteLength, 'bytes')
-
-        const blob = new Blob([new Uint8Array(filledPdfBytes)], { type: 'application/pdf' })
-        console.log('Blob created successfully')
-        return blob
+        return new Blob([new Uint8Array(filledPdfBytes)], { type: 'application/pdf' })
     } catch (error) {
         console.error('Error filling PDF:', error)
-        if (error instanceof Error) {
-            console.error('Error message:', error.message)
-            console.error('Error stack:', error.stack)
-        }
         throw new Error('فشل في إنشاء PDF')
     }
 }

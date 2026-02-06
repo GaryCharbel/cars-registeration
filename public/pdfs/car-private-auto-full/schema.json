@@ -1,0 +1,135 @@
+{
+    "title": "إمتحان سياحي خصوصي أوتوماتيك (محضر كامل)",
+    "fields": [
+        {
+            "id": "chamsiyePic",
+            "label": "الصورة الشخصية (Photo)",
+            "type": "file",
+            "required": false
+        },
+        {
+            "id": "estNum",
+            "label": "رقم الإستمارة",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "dateOfTest",
+            "label": "تاريخ الإختبار",
+            "type": "date",
+            "required": true
+        },
+        {
+            "id": "time",
+            "label": "الساعة",
+            "type": "time",
+            "required": false
+        },
+        {
+            "id": "place",
+            "label": "المكان",
+            "type": "text",
+            "required": false
+        },
+        {
+            "id": "firstName",
+            "label": "الإسم",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "lastName",
+            "label": "الشهرة",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "fatherName",
+            "label": "إسم الأب",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "motherName",
+            "label": "إسم الأم",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "firstNameEng",
+            "label": "First Name",
+            "type": "text",
+            "required": false
+        },
+        {
+            "id": "LastNameEng",
+            "label": "Last Name",
+            "type": "text",
+            "required": false
+        },
+        {
+            "id": "numPlaceD",
+            "label": "رقم ومكان القيد",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "sex",
+            "label": "الجنس",
+            "type": "select",
+            "options": [
+                "ذكر",
+                "أنثى"
+            ],
+            "required": false
+        },
+        {
+            "id": "pobDob",
+            "label": "محل وتاريخ الولادة",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "phoneNumber",
+            "label": "رقم الهاتف",
+            "type": "tel",
+            "required": true
+        },
+        {
+            "id": "placeOfStay",
+            "label": "عنوان السكن",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "bloodType",
+            "label": "فئة الدم",
+            "type": "text",
+            "required": false
+        },
+        {
+            "id": "numOfLicense",
+            "label": "رقم الرخصة (إن وجد)",
+            "type": "text",
+            "required": false
+        },
+        {
+            "id": "receiptNum",
+            "label": "رقم الإيصال",
+            "type": "text",
+            "required": false
+        },
+        {
+            "id": "checkAuto",
+            "label": "أوتوماتيك",
+            "type": "checkbox",
+            "required": false
+        },
+        {
+            "id": "checkMan",
+            "label": "يدوي",
+            "type": "checkbox",
+            "required": false
+        }
+    ]
+}
