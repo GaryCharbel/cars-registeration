@@ -1,0 +1,25 @@
+{
+    "fields": [
+        {
+            "fieldId": "fullName",
+            "x": 100,
+            "y": 200,
+            "page": 0,
+            "fontSize": 12
+        },
+        {
+            "fieldId": "idNumber",
+            "x": 100,
+            "y": 250,
+            "page": 0,
+            "fontSize": 12
+        },
+        {
+            "fieldId": "requestDate",
+            "x": 100,
+            "y": 300,
+            "page": 0,
+            "fontSize": 12
+        }
+    ]
+}

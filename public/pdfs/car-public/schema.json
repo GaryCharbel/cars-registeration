@@ -1,0 +1,158 @@
+{
+    "title": "طلب امتحان رخصة سوق سيارة - سياحة عمومية",
+    "fields": [
+        {
+            "id": "firstName",
+            "label": "الإسم",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل الاسم الأول"
+        },
+        {
+            "id": "lastName",
+            "label": "الشهرة",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل الشهرة"
+        },
+        {
+            "id": "fatherName",
+            "label": "إسم الأب",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل اسم الأب"
+        },
+        {
+            "id": "motherName",
+            "label": "إسم الأم",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل اسم الأم"
+        },
+        {
+            "id": "firstNameEng",
+            "label": "الإسم (بالانكليزي)",
+            "type": "text",
+            "required": false,
+            "placeholder": "First Name"
+        },
+        {
+            "id": "lastNameEng",
+            "label": "الشهرة (بالانكليزي)",
+            "type": "text",
+            "required": false,
+            "placeholder": "Last Name"
+        },
+        {
+            "id": "dobPob",
+            "label": "محل وتاريخ الولادة",
+            "type": "text",
+            "required": true,
+            "placeholder": "مثال: بيروت - 01/01/1990"
+        },
+        {
+            "id": "nationality",
+            "label": "الجنسية",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل الجنسية"
+        },
+        {
+            "id": "numberPlaceOfDriving",
+            "label": "رقم ومكان القيد",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل رقم ومكان القيد"
+        },
+        {
+            "id": "bloodType",
+            "label": "فئة الدم",
+            "type": "select",
+            "required": false,
+            "options": [
+                "A+",
+                "A-",
+                "B+",
+                "B-",
+                "AB+",
+                "AB-",
+                "O+",
+                "O-"
+            ]
+        },
+        {
+            "id": "placeOfStay",
+            "label": "عنوان السكن الحالي",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل عنوان السكن"
+        },
+        {
+            "id": "phoneNumber",
+            "label": "هاتف",
+            "type": "tel",
+            "required": true,
+            "placeholder": "03-123456"
+        },
+        {
+            "id": "numberOfLicense",
+            "label": "رقم رخصة السوق في حال وجودها",
+            "type": "text",
+            "required": false,
+            "placeholder": "رقم الرخصة"
+        },
+        {
+            "id": "numOfEx",
+            "label": "رقم الاستمارة",
+            "type": "text",
+            "required": true,
+            "placeholder": "رقم الاستمارة"
+        },
+        {
+            "id": "licenseType",
+            "label": "فئة الرخصة",
+            "type": "text",
+            "required": true,
+            "placeholder": "مثال: سياحة عمومية"
+        },
+        {
+            "id": "location",
+            "label": "مكان الامتحان",
+            "type": "text",
+            "required": false,
+            "placeholder": "المكان"
+        },
+        {
+            "id": "time",
+            "label": "الساعة",
+            "type": "text",
+            "required": false,
+            "placeholder": "الساعة"
+        },
+        {
+            "id": "dateOfTestVisual",
+            "label": "تاريخ الإختبار النظري",
+            "type": "date",
+            "required": false
+        },
+        {
+            "id": "receiptNum",
+            "label": "رقم الإيصال",
+            "type": "text",
+            "required": false,
+            "placeholder": "رقم الإيصال"
+        },
+        {
+            "id": "autoBool",
+            "label": "أوتوماتيك",
+            "type": "checkbox",
+            "required": false
+        },
+        {
+            "id": "manualBool",
+            "label": "يدوي",
+            "type": "checkbox",
+            "required": false
+        }
+    ]
+}

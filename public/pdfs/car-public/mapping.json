@@ -1,0 +1,95 @@
+{
+    "fields": [
+        {
+            "fieldId": "fullName",
+            "x": 380,
+            "y": 710,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "fatherName",
+            "x": 200,
+            "y": 710,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "motherName",
+            "x": 380,
+            "y": 690,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "birthPlace",
+            "x": 380,
+            "y": 670,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "birthDate",
+            "x": 200,
+            "y": 670,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "nationality",
+            "x": 380,
+            "y": 650,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "idNumber",
+            "x": 200,
+            "y": 650,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "phoneNumber",
+            "x": 70,
+            "y": 650,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "address",
+            "x": 200,
+            "y": 630,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "previousLicenseNumber",
+            "x": 200,
+            "y": 610,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "examDate",
+            "x": 450,
+            "y": 380,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "examTime",
+            "x": 350,
+            "y": 380,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "examLocation",
+            "x": 250,
+            "y": 380,
+            "page": 0,
+            "fontSize": 10
+        }
+    ]
+}

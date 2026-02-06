@@ -1,0 +1,25 @@
+{
+    "title": "محضر امتحان عمومي",
+    "fields": [
+        {
+            "id": "fullName",
+            "label": "الاسم الكامل",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل الاسم الكامل"
+        },
+        {
+            "id": "idNumber",
+            "label": "رقم الهوية",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل رقم الهوية"
+        },
+        {
+            "id": "examDate",
+            "label": "تاريخ الامتحان",
+            "type": "date",
+            "required": true
+        }
+    ]
+}

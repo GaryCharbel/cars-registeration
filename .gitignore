@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build outputs
+dist/
+dist-electron/
+build/
+*.exe
+*.dmg
+*.app
+
+# Environment
+.env
+.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Output PDFs
+output/filled-pdfs/*.pdf
+
+# Logs
+*.log
+npm-debug.log*
