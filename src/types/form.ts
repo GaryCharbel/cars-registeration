@@ -1,7 +1,7 @@
 export interface FormField {
     id: string
     label: string
-    type: 'text' | 'number' | 'date' | 'select' | 'checkbox' | 'tel'
+    type: 'text' | 'number' | 'date' | 'select' | 'checkbox' | 'tel' | 'file'
     required?: boolean
     options?: string[]
     placeholder?: string
@@ -25,4 +25,4 @@ export interface PdfMapping {
     fields: FieldMapping[]
 }
 
-export type FormData = Record<string, string | number | boolean>
+export type FormData = Record<string, string | number | boolean | any>

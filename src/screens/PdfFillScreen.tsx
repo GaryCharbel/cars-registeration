@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import DynamicForm from '../components/DynamicForm'
-import PdfPreview from '../components/PdfPreview'
+
 import { loadSchema } from '../lib/loadSchema'
 import { fillPdf, downloadPdf } from '../lib/pdfFill'
 import type { FormSchema, FormData } from '../types/form'
@@ -72,7 +72,7 @@ export default function PdfFillScreen({ pdfId, onBack }: PdfFillScreenProps) {
             )}
 
             {!loading && !error && schema && (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="max-w-3xl mx-auto">
                     {/* Form Section */}
                     <div className="bg-white rounded-lg shadow-md p-8">
                         {generating && (
@@ -83,10 +83,6 @@ export default function PdfFillScreen({ pdfId, onBack }: PdfFillScreenProps) {
                         <DynamicForm schema={schema} onSubmit={handleSubmit} />
                     </div>
 
-                    {/* Preview Section */}
-                    <div>
-                        <PdfPreview pdfPath={pdfPath} />
-                    </div>
                 </div>
             )}
         </div>

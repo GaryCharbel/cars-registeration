@@ -1,5 +1,7 @@
 import { PDFDocument } from 'pdf-lib'
+import fontkit from '@pdf-lib/fontkit'
 import type { FormData } from '../types/form'
+import cairoFontUrl from '../assets/fonts/Amiri-Regular.ttf'
 
 export async function fillPdf(
     sourcePdfPath: string,
@@ -22,7 +24,17 @@ export async function fillPdf(
         // Load the PDF
         console.log('Loading PDF document...')
         const pdfDoc = await PDFDocument.load(pdfBytes)
+        pdfDoc.registerFontkit(fontkit)
         console.log('PDF loaded successfully, pages:', pdfDoc.getPageCount())
+
+        // Load Arabic Font
+        console.log('Loading Arabic font from:', cairoFontUrl)
+        const fontBytes = await fetch(cairoFontUrl).then(res => {
+            if (!res.ok) throw new Error(`Failed to load font: ${res.statusText}`)
+            return res.arrayBuffer()
+        })
+        const customFont = await pdfDoc.embedFont(fontBytes)
+        console.log('Arabic font loaded')
 
         // Get the form
         const form = pdfDoc.getForm()
@@ -43,10 +55,40 @@ export async function fillPdf(
                 continue
             }
 
+            if (value instanceof FileList && value.length > 0) {
+                try {
+                    const file = value[0]
+                    const arrayBuffer = await file.arrayBuffer()
+                    const imageBytes = new Uint8Array(arrayBuffer)
+
+                    let image
+                    if (file.type === 'image/png') {
+                        image = await pdfDoc.embedPng(imageBytes)
+                    } else if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
+                        image = await pdfDoc.embedJpg(imageBytes)
+                    }
+
+                    if (image) {
+                        try {
+                            const button = form.getButton(fieldId)
+                            button.setImage(image)
+                            console.log(`✓ Set image for button "${fieldId}"`)
+                        } catch (err) {
+                            console.warn(`Could not set image for field "${fieldId}":`, err)
+                        }
+                    }
+                } catch (err) {
+                    console.error(`Error processing image for field "${fieldId}":`, err)
+                }
+                continue
+            }
+
             try {
                 // Try as text field first
                 const field = form.getTextField(fieldId)
                 field.setText(String(value))
+                field.setFontSize(14)
+                field.updateAppearances(customFont)
                 console.log(`✓ Filled text field "${fieldId}" with "${value}"`)
             } catch (error) {
                 // If not a text field, try as checkbox

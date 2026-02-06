@@ -2,6 +2,12 @@
     "title": "طلب امتحان رخصة سوق سيارة - سياحة عمومية",
     "fields": [
         {
+            "id": "chamsiyePic",
+            "label": "الصورة الشمسية",
+            "type": "file",
+            "required": false
+        },
+        {
             "id": "firstName",
             "label": "الإسم",
             "type": "text",
@@ -37,28 +43,28 @@
             "placeholder": "First Name"
         },
         {
-            "id": "lastNameEng",
+            "id": "LastNameEng",
             "label": "الشهرة (بالانكليزي)",
             "type": "text",
             "required": false,
             "placeholder": "Last Name"
         },
         {
-            "id": "dobPob",
+            "id": "pobDob",
             "label": "محل وتاريخ الولادة",
             "type": "text",
             "required": true,
             "placeholder": "مثال: بيروت - 01/01/1990"
         },
         {
-            "id": "nationality",
-            "label": "الجنسية",
+            "id": "sex",
+            "label": "الجنس",
             "type": "text",
             "required": true,
-            "placeholder": "أدخل الجنسية"
+            "placeholder": "ذكر / أنثى"
         },
         {
-            "id": "numberPlaceOfDriving",
+            "id": "numPlaceD",
             "label": "رقم ومكان القيد",
             "type": "text",
             "required": true,
@@ -95,28 +101,21 @@
             "placeholder": "03-123456"
         },
         {
-            "id": "numberOfLicense",
+            "id": "numOfLicense",
             "label": "رقم رخصة السوق في حال وجودها",
             "type": "text",
             "required": false,
             "placeholder": "رقم الرخصة"
         },
         {
-            "id": "numOfEst",
+            "id": "estNum",
             "label": "رقم الاستمارة",
             "type": "text",
             "required": true,
             "placeholder": "رقم الاستمارة"
         },
         {
-            "id": "licenseType",
-            "label": "فئة الرخصة",
-            "type": "text",
-            "required": true,
-            "placeholder": "مثال: سياحة عمومية"
-        },
-        {
-            "id": "location",
+            "id": "place",
             "label": "مكان الامتحان",
             "type": "text",
             "required": false,
@@ -130,7 +129,7 @@
             "placeholder": "الساعة"
         },
         {
-            "id": "dateOfTestVisual",
+            "id": "dateOfTest",
             "label": "تاريخ الإختبار النظري",
             "type": "date",
             "required": false
@@ -143,13 +142,13 @@
             "placeholder": "رقم الإيصال"
         },
         {
-            "id": "autoBool",
+            "id": "checkAuto",
             "label": "أوتوماتيك",
             "type": "checkbox",
             "required": false
         },
         {
-            "id": "manualBool",
+            "id": "checkMan",
             "label": "يدوي",
             "type": "checkbox",
             "required": false
