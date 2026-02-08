@@ -1,5 +1,7 @@
 import { PDFDocument, rgb } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
+import ArabicReshaper from 'arabic-reshaper'
+import bidiFactory from 'bidi-js'
 import type { FormData } from '../types/form'
 import cairoFontUrl from '../assets/fonts/Amiri-Regular.ttf'
 import ArabicReshaper from 'arabic-reshaper'
@@ -19,6 +21,8 @@ interface Mapping {
     fields: FieldMapping[]
 }
 
+const bidi = bidiFactory()
+
 export async function fillPdf(
     sourcePdfPath: string,
     formData: FormData,
@@ -26,32 +30,24 @@ export async function fillPdf(
 ): Promise<Blob> {
     try {
         console.log('Starting PDF form fill process...')
-        console.log('Source PDF path:', sourcePdfPath)
-        console.log('Form data:', formData)
 
         // Fetch the source PDF
-        console.log('Fetching PDF...')
         const response = await fetch(sourcePdfPath)
         if (!response.ok) {
             throw new Error(`Failed to fetch PDF: ${response.status} ${response.statusText}`)
         }
         const pdfBytes = await response.arrayBuffer()
-        console.log('PDF fetched, size:', pdfBytes.byteLength, 'bytes')
 
         // Load the PDF
-        console.log('Loading PDF document...')
         const pdfDoc = await PDFDocument.load(pdfBytes)
         pdfDoc.registerFontkit(fontkit)
-        console.log('PDF loaded successfully, pages:', pdfDoc.getPageCount())
 
         // Load Arabic Font
-        console.log('Loading Arabic font from:', cairoFontUrl)
         const fontBytes = await fetch(cairoFontUrl).then(res => {
             if (!res.ok) throw new Error(`Failed to load font: ${res.statusText}`)
             return res.arrayBuffer()
         })
         const customFont = await pdfDoc.embedFont(fontBytes)
-        console.log('Arabic font loaded')
 
         // Load mapping file if pdfId is provided
         let mapping: Mapping | null = null
@@ -207,6 +203,46 @@ export async function fillPdf(
                     console.warn('Could not reshape Arabic text:', err)
                     textValue = textValue.split('').reverse().join('')
                 }
+
+                if (field.constructor.name.includes('PDFTextField')) {
+                    const textField = form.getTextField(fieldId)
+                    const rawText = String(value)
+                    const textValue = reshapeText(rawText)
+
+                    try {
+                        textField.setFontSize(18) // Extra large for readability
+                        textField.setText(textValue)
+                        textField.updateAppearances(customFont)
+                    } catch (textError) {
+                        try {
+                            textField.setFontSize(18)
+                            textField.updateAppearances(customFont)
+                            textField.setText(textValue)
+                        } catch (recoveryError) {
+                            console.error(`Final failure for text field "${fieldId}"`)
+                        }
+                    }
+                } else if (field.constructor.name.includes('PDFCheckBox')) {
+                    const checkbox = form.getCheckBox(fieldId)
+                    // Robust boolean check
+                    const isChecked = value === true ||
+                        value === 'true' ||
+                        value === 'on' ||
+                        value === 'yes' ||
+                        value === 'ذكر'
+
+                    if (isChecked) {
+                        checkbox.check()
+                    } else {
+                        checkbox.uncheck()
+                    }
+                } else if (field.constructor.name.includes('PDFDropdown')) {
+                    const dropdown = form.getDropdown(fieldId)
+                    dropdown.select(String(value))
+                    dropdown.updateAppearances(customFont)
+                }
+            } catch (error) {
+                console.warn(`Major error processing field "${fieldId}":`, error)
             }
 
             // Draw the text
@@ -220,19 +256,10 @@ export async function fillPdf(
             console.log(`✓ Drew text "${textValue}" for "${fieldMapping.fieldId}"`)
         }
 
-        console.log('Saving filled PDF...')
         const filledPdfBytes = await pdfDoc.save()
-        console.log('PDF saved, size:', filledPdfBytes.byteLength, 'bytes')
-
-        const blob = new Blob([new Uint8Array(filledPdfBytes)], { type: 'application/pdf' })
-        console.log('Blob created successfully')
-        return blob
+        return new Blob([new Uint8Array(filledPdfBytes)], { type: 'application/pdf' })
     } catch (error) {
         console.error('Error filling PDF:', error)
-        if (error instanceof Error) {
-            console.error('Error message:', error.message)
-            console.error('Error stack:', error.stack)
-        }
         throw new Error('فشل في إنشاء PDF')
     }
 }

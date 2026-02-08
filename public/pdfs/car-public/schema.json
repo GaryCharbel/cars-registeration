@@ -4,48 +4,67 @@
     "fields": [
         {
             "id": "chamsiyePic",
-            "label": "الصورة الشمسية",
+            "label": "الصورة الشخصية (Photo)",
             "type": "file",
+            "required": false
+        },
+        {
+            "id": "estNum",
+            "label": "رقم الإستمارة",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "dateOfTest",
+            "label": "تاريخ الإختبار",
+            "type": "date",
+            "required": true
+        },
+        {
+            "id": "time",
+            "label": "الساعة",
+            "type": "time",
+            "required": false
+        },
+        {
+            "id": "place",
+            "label": "المكان",
+            "type": "text",
             "required": false
         },
         {
             "id": "firstName",
             "label": "الإسم",
             "type": "text",
-            "required": true,
-            "placeholder": "أدخل الاسم الأول"
+            "required": true
         },
         {
             "id": "lastName",
             "label": "الشهرة",
             "type": "text",
-            "required": true,
-            "placeholder": "أدخل الشهرة"
+            "required": true
         },
         {
             "id": "fatherName",
             "label": "إسم الأب",
             "type": "text",
-            "required": true,
-            "placeholder": "أدخل اسم الأب"
+            "required": true
         },
         {
             "id": "motherName",
             "label": "إسم الأم",
             "type": "text",
-            "required": true,
-            "placeholder": "أدخل اسم الأم"
+            "required": true
         },
         {
             "id": "firstNameEng",
-            "label": "الإسم (بالانكليزي)",
+            "label": "First Name",
             "type": "text",
-            "required": false,
-            "placeholder": "First Name"
+            "required": false
         },
         {
             "id": "LastNameEng",
-            "label": "الشهرة (بالانكليزي)",
+            "label": "Last Name",
             "type": "text",
             "required": false,
             "placeholder": "Last Name"
@@ -72,8 +91,35 @@
             "id": "numPlaceD",
             "label": "رقم ومكان القيد",
             "type": "text",
-            "required": true,
-            "placeholder": "أدخل رقم ومكان القيد"
+            "required": true
+        },
+        {
+            "id": "sex",
+            "label": "الجنس",
+            "type": "select",
+            "options": [
+                "ذكر",
+                "أنثى"
+            ],
+            "required": false
+        },
+        {
+            "id": "pobDob",
+            "label": "محل وتاريخ الولادة",
+            "type": "text",
+            "required": true
+        },
+        {
+            "id": "phoneNumber",
+            "label": "رقم الهاتف",
+            "type": "tel",
+            "required": true
+        },
+        {
+            "id": "placeOfStay",
+            "label": "عنوان السكن",
+            "type": "text",
+            "required": true
         },
         {
             "id": "bloodType",
@@ -95,56 +141,19 @@
             "id": "placeOfStay",
             "label": "عنوان السكن الحالي",
             "type": "text",
-            "required": true,
-            "placeholder": "أدخل عنوان السكن"
-        },
-        {
-            "id": "phoneNumber",
-            "label": "هاتف",
-            "type": "tel",
-            "required": true,
-            "placeholder": "03-123456"
+            "required": false
         },
         {
             "id": "numOfLicense",
-            "label": "رقم رخصة السوق في حال وجودها",
+            "label": "رقم الرخصة (إن وجد)",
             "type": "text",
-            "required": false,
-            "placeholder": "رقم الرخصة"
-        },
-        {
-            "id": "estNum",
-            "label": "رقم الاستمارة",
-            "type": "text",
-            "required": true,
-            "placeholder": "رقم الاستمارة"
-        },
-        {
-            "id": "place",
-            "label": "مكان الامتحان",
-            "type": "text",
-            "required": false,
-            "placeholder": "المكان"
-        },
-        {
-            "id": "time",
-            "label": "الساعة",
-            "type": "text",
-            "required": false,
-            "placeholder": "الساعة"
-        },
-        {
-            "id": "dateOfTest",
-            "label": "تاريخ الإختبار النظري",
-            "type": "date",
             "required": false
         },
         {
             "id": "receiptNum",
             "label": "رقم الإيصال",
             "type": "text",
-            "required": false,
-            "placeholder": "رقم الإيصال"
+            "required": false
         },
         {
             "id": "checkAuto",
