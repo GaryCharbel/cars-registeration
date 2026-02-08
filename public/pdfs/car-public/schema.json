@@ -1,5 +1,6 @@
 {
     "title": "طلب امتحان رخصة سوق سيارة - سياحة عمومية",
+    "formType": "محضر امتحان عمومي",
     "fields": [
         {
             "id": "chamsiyePic",
@@ -61,7 +62,11 @@
             "label": "الجنس",
             "type": "text",
             "required": true,
-            "placeholder": "ذكر / أنثى"
+            "placeholder": "ذكر / أنثى",
+            "options": [
+                "ذكر",
+                "أنثى"
+            ]
         },
         {
             "id": "numPlaceD",
@@ -73,7 +78,7 @@
         {
             "id": "bloodType",
             "label": "فئة الدم",
-            "type": "select",
+            "type": "text",
             "required": false,
             "options": [
                 "A+",

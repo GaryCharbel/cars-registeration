@@ -1,93 +1,151 @@
 {
     "fields": [
         {
-            "fieldId": "fullName",
-            "x": 380,
-            "y": 710,
+            "fieldId": "chamsiyePic",
+            "x": 21,
+            "y": 643,
+            "page": 0,
+            "width": 106,
+            "height": 122,
+            "type": "image"
+        },
+        {
+            "fieldId": "firstName",
+            "x": 439,
+            "y": 693,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "lastName",
+            "x": 352,
+            "y": 692,
             "page": 0,
             "fontSize": 10
         },
         {
             "fieldId": "fatherName",
-            "x": 200,
-            "y": 710,
+            "x": 264,
+            "y": 691,
             "page": 0,
             "fontSize": 10
         },
         {
             "fieldId": "motherName",
-            "x": 380,
-            "y": 690,
+            "x": 133,
+            "y": 692,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "birthPlace",
-            "x": 380,
-            "y": 670,
+            "fieldId": "firstNameEng",
+            "x": 339,
+            "y": 671,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "birthDate",
-            "x": 200,
-            "y": 670,
+            "fieldId": "LastNameEng",
+            "x": 132,
+            "y": 671,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "nationality",
-            "x": 380,
-            "y": 650,
+            "fieldId": "numPlaceD",
+            "x": 440,
+            "y": 649,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "idNumber",
-            "x": 200,
-            "y": 650,
+            "fieldId": "sex",
+            "x": 326,
+            "y": 651,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "pobDob",
+            "x": 132,
+            "y": 649,
             "page": 0,
             "fontSize": 10
         },
         {
             "fieldId": "phoneNumber",
-            "x": 70,
-            "y": 650,
+            "x": 462,
+            "y": 629,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "address",
-            "x": 200,
-            "y": 630,
+            "fieldId": "placeOfStay",
+            "x": 209,
+            "y": 628,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "previousLicenseNumber",
-            "x": 200,
-            "y": 610,
+            "fieldId": "bloodType",
+            "x": 132,
+            "y": 629,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "examDate",
-            "x": 450,
-            "y": 380,
+            "fieldId": "numOfLicense",
+            "x": 139,
+            "y": 608,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "examTime",
-            "x": 350,
-            "y": 380,
+            "fieldId": "estNum",
+            "x": 363,
+            "y": 596,
             "page": 0,
             "fontSize": 10
         },
         {
-            "fieldId": "examLocation",
-            "x": 250,
-            "y": 380,
+            "fieldId": "checkAuto",
+            "x": 132,
+            "y": 570,
+            "page": 0,
+            "type": "checkbox"
+        },
+        {
+            "fieldId": "checkMan",
+            "x": 223,
+            "y": 571,
+            "page": 0,
+            "type": "checkbox"
+        },
+        {
+            "fieldId": "dateOfTest",
+            "x": 185,
+            "y": 359,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "time",
+            "x": 91,
+            "y": 360,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "place",
+            "x": 22,
+            "y": 360,
+            "page": 0,
+            "fontSize": 10
+        },
+        {
+            "fieldId": "receiptNum",
+            "x": 365,
+            "y": 346,
             "page": 0,
             "fontSize": 10
         }

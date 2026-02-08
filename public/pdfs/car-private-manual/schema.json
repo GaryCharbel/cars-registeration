@@ -1,25 +1,158 @@
 {
     "title": "إمتحان سياحي خصوصي يدوي",
+    "formType": "سياحي خصوصي يدوي",
     "fields": [
         {
-            "id": "fullName",
-            "label": "الاسم الكامل",
-            "type": "text",
-            "required": true,
-            "placeholder": "أدخل الاسم الكامل"
+            "id": "chamsiyePic",
+            "label": "الصورة الشمسية",
+            "type": "file",
+            "required": false
         },
         {
-            "id": "idNumber",
-            "label": "رقم الهوية",
+            "id": "firstName",
+            "label": "الإسم",
             "type": "text",
             "required": true,
-            "placeholder": "أدخل رقم الهوية"
+            "placeholder": "أدخل الاسم الأول"
         },
         {
-            "id": "examDate",
-            "label": "تاريخ الامتحان",
+            "id": "lastName",
+            "label": "الشهرة",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل الشهرة"
+        },
+        {
+            "id": "fatherName",
+            "label": "إسم الأب",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل اسم الأب"
+        },
+        {
+            "id": "motherName",
+            "label": "إسم الأم",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل اسم الأم"
+        },
+        {
+            "id": "firstNameEng",
+            "label": "الإسم (بالانكليزي)",
+            "type": "text",
+            "required": false,
+            "placeholder": "First Name"
+        },
+        {
+            "id": "LastNameEng",
+            "label": "الشهرة (بالانكليزي)",
+            "type": "text",
+            "required": false,
+            "placeholder": "Last Name"
+        },
+        {
+            "id": "pobDob",
+            "label": "محل وتاريخ الولادة",
+            "type": "text",
+            "required": true,
+            "placeholder": "مثال: بيروت - 01/01/1990"
+        },
+        {
+            "id": "sex",
+            "label": "الجنس",
+            "type": "text",
+            "required": true,
+            "placeholder": "ذكر / أنثى"
+        },
+        {
+            "id": "numPlaceD",
+            "label": "رقم ومكان القيد",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل رقم ومكان القيد"
+        },
+        {
+            "id": "bloodType",
+            "label": "فئة الدم",
+            "type": "select",
+            "required": false,
+            "options": [
+                "A+",
+                "A-",
+                "B+",
+                "B-",
+                "AB+",
+                "AB-",
+                "O+",
+                "O-"
+            ]
+        },
+        {
+            "id": "placeOfStay",
+            "label": "عنوان السكن الحالي",
+            "type": "text",
+            "required": true,
+            "placeholder": "أدخل عنوان السكن"
+        },
+        {
+            "id": "phoneNumber",
+            "label": "هاتف",
+            "type": "tel",
+            "required": true,
+            "placeholder": "03-123456"
+        },
+        {
+            "id": "numOfLicense",
+            "label": "رقم رخصة السوق في حال وجودها",
+            "type": "text",
+            "required": false,
+            "placeholder": "رقم الرخصة"
+        },
+        {
+            "id": "estNum",
+            "label": "رقم الاستمارة",
+            "type": "text",
+            "required": true,
+            "placeholder": "رقم الاستمارة"
+        },
+        {
+            "id": "place",
+            "label": "مكان الامتحان",
+            "type": "text",
+            "required": false,
+            "placeholder": "المكان"
+        },
+        {
+            "id": "time",
+            "label": "الساعة",
+            "type": "text",
+            "required": false,
+            "placeholder": "الساعة"
+        },
+        {
+            "id": "dateOfTest",
+            "label": "تاريخ الإختبار النظري",
             "type": "date",
-            "required": true
+            "required": false
+        },
+        {
+            "id": "receiptNum",
+            "label": "رقم الإيصال",
+            "type": "text",
+            "required": false,
+            "placeholder": "رقم الإيصال"
+        },
+        {
+            "id": "checkAuto",
+            "label": "أوتوماتيك",
+            "type": "checkbox",
+            "required": false
+        },
+        {
+            "id": "checkMan",
+            "label": "يدوي",
+            "type": "checkbox",
+            "required": false
         }
     ]
 }

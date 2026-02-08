@@ -1,11 +1,28 @@
-import { PDFDocument } from 'pdf-lib'
+import { PDFDocument, rgb } from 'pdf-lib'
 import fontkit from '@pdf-lib/fontkit'
 import type { FormData } from '../types/form'
 import cairoFontUrl from '../assets/fonts/Amiri-Regular.ttf'
+import ArabicReshaper from 'arabic-reshaper'
+
+interface FieldMapping {
+    fieldId: string
+    x: number
+    y: number
+    page: number
+    fontSize?: number
+    width?: number
+    height?: number
+    type?: string
+}
+
+interface Mapping {
+    fields: FieldMapping[]
+}
 
 export async function fillPdf(
     sourcePdfPath: string,
-    formData: FormData
+    formData: FormData,
+    pdfId?: string
 ): Promise<Blob> {
     try {
         console.log('Starting PDF form fill process...')
@@ -36,72 +53,171 @@ export async function fillPdf(
         const customFont = await pdfDoc.embedFont(fontBytes)
         console.log('Arabic font loaded')
 
-        // Get the form
+        // Load mapping file if pdfId is provided
+        let mapping: Mapping | null = null
+        if (pdfId) {
+            try {
+                const mappingPath = `/pdfs/${pdfId}/mapping.json?t=${Date.now()}`
+                console.log('Loading mapping from:', mappingPath)
+                const mappingResponse = await fetch(mappingPath)
+                if (mappingResponse.ok) {
+                    const data = await mappingResponse.json()
+                    mapping = data as Mapping
+                    console.log('Mapping loaded successfully:', mapping.fields.length, 'fields')
+                }
+            } catch (err) {
+                console.warn('Could not load mapping file:', err)
+            }
+        }
+
+        // Safety check for mapping
+        if (!mapping) {
+            console.warn('No mapping file found, PDF will not be filled')
+            return new Blob([], { type: 'application/pdf' })
+        }
+        const finalMapping = mapping;
+
+        // Get the form and flatten it
         const form = pdfDoc.getForm()
-        const fields = form.getFields()
-        console.log('Form fields found:', fields.length)
+        console.log('Flattening form...')
+        form.flatten()
+        console.log('Form flattened')
 
-        // Log all field names for debugging
-        fields.forEach(field => {
-            const name = field.getName()
-            const type = field.constructor.name
-            console.log(`Field: "${name}" (${type})`)
-        })
+        const pages = pdfDoc.getPages()
 
-        // Fill form fields
-        console.log('Filling form fields...')
-        for (const [fieldId, value] of Object.entries(formData)) {
+        // Create a lookup for fields by name for easier access
+        const pdfFields = form.getFields()
+        console.log(`PDF has ${pdfFields.length} internal fields`)
+
+        // Iterate through each field in our mapping and draw onto the page
+        for (const fieldMapping of finalMapping.fields) {
+            const value = formData[fieldMapping.fieldId]
+
             if (value === undefined || value === null || value === '') {
                 continue
             }
 
-            if (value instanceof FileList && value.length > 0) {
-                try {
-                    const file = value[0]
-                    const arrayBuffer = await file.arrayBuffer()
-                    const imageBytes = new Uint8Array(arrayBuffer)
+            // Get actual coordinates from the PDF if possible
+            let x = fieldMapping.x
+            let y = fieldMapping.y
+            let width = fieldMapping.width || 0
+            let height = fieldMapping.height || 0
 
-                    let image
-                    if (file.type === 'image/png') {
-                        image = await pdfDoc.embedPng(imageBytes)
-                    } else if (file.type === 'image/jpeg' || file.type === 'image/jpg') {
-                        image = await pdfDoc.embedJpg(imageBytes)
+            try {
+                const pdfField = form.getField(fieldMapping.fieldId)
+                if (pdfField) {
+                    const widgets = pdfField.acroField.getWidgets()
+                    if (widgets.length > 0) {
+                        const rect = widgets[0].getRectangle()
+                        x = rect.x
+                        // The rect.y is the bottom of the field. 
+                        // Adding a tiny offset to sit perfectly ON the line.
+                        y = rect.y + 2
+                        width = rect.width
+                        height = rect.height
                     }
+                }
+            } catch (err) {
+                console.warn(`No native coords for "${fieldMapping.fieldId}", using mapping.json defaults`)
+            }
 
-                    if (image) {
-                        try {
-                            const button = form.getButton(fieldId)
-                            button.setImage(image)
-                            console.log(`✓ Set image for button "${fieldId}"`)
-                        } catch (err) {
-                            console.warn(`Could not set image for field "${fieldId}":`, err)
+            const pageIndex = fieldMapping.page || 0
+            const page = pages[pageIndex]
+            if (!page) continue
+
+            // Handle image fields
+            const isImageField = fieldMapping.type === 'image' || fieldMapping.fieldId.toLowerCase().includes('pic')
+            if (isImageField) {
+                if (value) {
+                    try {
+                        let file: File | null = null
+                        if (value instanceof FileList && value.length > 0) {
+                            file = value[0]
+                        } else if (value instanceof File) {
+                            file = value
+                        } else if (typeof value === 'object' && value !== null && 'length' in (value as any)) {
+                            file = (value as any)[0]
                         }
+
+                        if (file instanceof File) {
+                            const arrayBuffer = await file.arrayBuffer()
+                            const imageBytes = new Uint8Array(arrayBuffer)
+                            let image
+                            try {
+                                image = await pdfDoc.embedJpg(imageBytes)
+                            } catch {
+                                image = await pdfDoc.embedPng(imageBytes)
+                            }
+
+                            if (image && width && height) {
+                                page.drawImage(image, {
+                                    x: x,
+                                    y: y - 2, // Compensate for the +2 baseline offset
+                                    width: width,
+                                    height: height,
+                                })
+                                console.log(`✓ Drew image for "${fieldMapping.fieldId}"`)
+                            }
+                        }
+                    } catch (err) {
+                        console.error(`Error processing image for "${fieldMapping.fieldId}":`, err)
                     }
-                } catch (err) {
-                    console.error(`Error processing image for field "${fieldId}":`, err)
                 }
                 continue
             }
 
-            try {
-                // Try as text field first
-                const field = form.getTextField(fieldId)
-                field.setText(String(value))
-                field.setFontSize(14)
-                field.updateAppearances(customFont)
-                console.log(`✓ Filled text field "${fieldId}" with "${value}"`)
-            } catch (error) {
-                // If not a text field, try as checkbox
+            // Handle checkbox fields
+            if (fieldMapping.type === 'checkbox') {
+                if (value === true || value === 'true' || value === 'on') {
+                    page.drawText('X', {
+                        x: x + (width / 4),
+                        y: y + (height / 4),
+                        size: 12,
+                        font: customFont,
+                        color: rgb(0, 0, 0),
+                    })
+                    console.log(`✓ Drew checkbox for "${fieldMapping.fieldId}"`)
+                }
+                continue
+            }
+
+            // Handle text fields
+            const fontSize = fieldMapping.fontSize || 10
+            let textValue = String(value)
+
+            // Reshape Arabic text for proper character joining and reverse for RTL
+            const arabicPattern = /[\u0600-\u06FF]/
+            if (arabicPattern.test(textValue)) {
                 try {
-                    const checkboxField = form.getCheckBox(fieldId)
-                    if (value === true || value === 'true' || value === 'on') {
-                        checkboxField.check()
-                        console.log(`✓ Checked checkbox "${fieldId}"`)
+                    const reshaper = (ArabicReshaper as any).default || ArabicReshaper
+                    let shapedText = textValue
+
+                    // The correct method for this library is convertArabic
+                    if (reshaper && typeof reshaper.convertArabic === 'function') {
+                        shapedText = reshaper.convertArabic(textValue)
+                    } else if (reshaper && typeof reshaper.reshape === 'function') {
+                        shapedText = reshaper.reshape(textValue)
+                    } else if (typeof reshaper === 'function') {
+                        shapedText = (reshaper as any)(textValue)
                     }
-                } catch (checkboxError) {
-                    console.warn(`Could not fill field "${fieldId}":`, error)
+
+                    textValue = shapedText.split('').reverse().join('')
+                    console.log(`✓ Formatted Arabic: "${textValue}"`)
+                } catch (err) {
+                    console.warn('Could not reshape Arabic text:', err)
+                    textValue = textValue.split('').reverse().join('')
                 }
             }
+
+            // Draw the text
+            page.drawText(textValue, {
+                x: x,
+                y: y,
+                size: fontSize,
+                font: customFont,
+                color: rgb(0, 0, 0),
+            })
+            console.log(`✓ Drew text "${textValue}" for "${fieldMapping.fieldId}"`)
         }
 
         console.log('Saving filled PDF...')
@@ -122,10 +238,33 @@ export async function fillPdf(
 }
 
 export function downloadPdf(blob: Blob, filename: string) {
+    console.log('downloadPdf called with filename:', filename)
+    console.log('Blob size:', blob.size, 'bytes')
+
     const url = URL.createObjectURL(blob)
+    console.log('Created blob URL:', url)
+
+    // Create link element
     const link = document.createElement('a')
     link.href = url
     link.download = filename
+    link.style.display = 'none'
+
+    // Append to body (required for Firefox)
+    document.body.appendChild(link)
+
+    // Trigger download
     link.click()
-    URL.revokeObjectURL(url)
+    console.log('Download triggered for:', filename)
+
+    // Also open in new tab so user can view it immediately
+    window.open(url, '_blank')
+    console.log('Opened PDF in new tab')
+
+    // Clean up after a delay
+    setTimeout(() => {
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+        console.log('Cleaned up download link and blob URL')
+    }, 100)
 }

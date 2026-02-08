@@ -9,6 +9,7 @@ export interface FormField {
 
 export interface FormSchema {
     title: string
+    formType: string // Used for filename generation
     fields: FormField[]
 }
 

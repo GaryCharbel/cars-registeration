@@ -39,9 +39,16 @@ export default function PdfFillScreen({ pdfId, onBack }: PdfFillScreenProps) {
     const handleSubmit = async (formData: FormData) => {
         try {
             setGenerating(true)
-            const pdfBlob = await fillPdf(pdfPath, formData)
-            const timestamp = new Date().toISOString().replace(/[:.]/g, '-')
-            downloadPdf(pdfBlob, `${pdfId}-${timestamp}.pdf`)
+            const pdfBlob = await fillPdf(pdfPath, formData, pdfId)
+
+            // Generate filename: [form type] - [date] - [client name]
+            const today = new Date()
+            const dateStr = today.toISOString().split('T')[0] // YYYY-MM-DD
+            const clientName = `${formData.firstName || ''} ${formData.lastName || ''}`.trim() || 'client'
+            const formType = schema?.formType || pdfId
+            const filename = `${formType} - ${dateStr} - ${clientName}.pdf`
+
+            downloadPdf(pdfBlob, filename)
         } catch (err) {
             console.error('Error generating PDF:', err)
             alert('فشل في إنشاء PDF. يرجى المحاولة مرة أخرى.')
